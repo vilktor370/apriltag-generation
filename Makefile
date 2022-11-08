@@ -1,5 +1,6 @@
-FILENAME = april.tag.TagCircle21h7
+FILENAME = april.tag.Tag16h10
 OUTPUT_DIR = data
+
 all:
 	java -cp april.jar april.tag.TagToC $(FILENAME)
 	mv *.c data/
