@@ -1,3 +1,6 @@
 april.jar
 *.swp
+data
+.gitignore
+
 
