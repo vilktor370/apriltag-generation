@@ -353,7 +353,7 @@ public class TagFamilyGenerator
         long lastprogressiters = 0;
 
         int nthreads = Runtime.getRuntime().availableProcessors();
-        System.out.printf("Using %d threads.\n", nthreads);
+        // System.out.printf("Using %d threads.\n", nthreads);
 
 
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nthreads, nthreads, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
@@ -410,7 +410,7 @@ public class TagFamilyGenerator
             }
 
             if (!approvalThread.isAlive()) {
-                System.out.println("Approval thread dead. Done!");
+                // System.out.println("Approval thread dead. Done!");
                 break;
             }
 
