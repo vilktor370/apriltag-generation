@@ -9,9 +9,9 @@ def main():
     
     lst = [
         'd' * 5,
-        'd' + 'b' *3 + 'd',
-        'dbwbd',
-        'd' + 'b' *3 + 'd',
+        'd' + 'w' *3 + 'd',
+        'dwbwd',
+        'd' + 'w' *3 + 'd',
         'd'*5,
     ]
     print('Check shape:')

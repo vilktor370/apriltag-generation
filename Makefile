@@ -1,6 +1,6 @@
 OUTPUT_DIR = data
 SRC = src/april/tag/
-CUSTOM = ddddddbbbddbwbddbbbdddddd
+CUSTOM = ddddddwwwddwbwddwwwdddddd
 MIN_DIS = 2
 NUM_BITS = 16
 FILENAME = TagCustom$(NUM_BITS)h$(MIN_DIS)
@@ -24,4 +24,5 @@ png:
 	java -cp april.jar april.tag.GenerateTags $(FILENAME) $(OUTPUT_DIR)
 
 clean:
-	rm $(SRC)/$(FILENAME)
+	rm $(SRC)$(FILENAME).java
+	rm data/*
