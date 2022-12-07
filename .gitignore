@@ -1,5 +1,6 @@
 april.jar
 *.swp
 .gitignore
-
-
+data/
+.vscode
+env/
