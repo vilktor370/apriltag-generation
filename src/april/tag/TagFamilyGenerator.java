@@ -454,6 +454,7 @@ public class TagFamilyGenerator
             long rv3 = TagFamily.rotate90(rv2, nbits);
 
             for (int j = i+1; j < nCodes; j++) {
+                // TODO: replace this with our fancy algorithm
                 int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
                                              hammingDistance(rv1, codelist.get(j))),
                                     Math.min(hammingDistance(rv2, codelist.get(j)),
@@ -554,7 +555,7 @@ public class TagFamilyGenerator
     {
         return popCount2(a^b);
     }
-
+    
     public static final boolean hammingDistanceAtLeast(long a, long b, int minval)
     {
         long w = a^b;

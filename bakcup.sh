@@ -1,0 +1,1 @@
+scp data/* haochyu@stormbringer.eecs.umich.edu:/bigdata/shared/haochyu
