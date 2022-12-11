@@ -8,11 +8,17 @@
 def main():
     
     lst = [
-        'd' * 5,
-        'd' + 'w' *3 + 'd',
-        'dwbwd',
-        'd' + 'w' *3 + 'd',
-        'd'*5,
+        # 'd' * 5,
+        # 'd' + 'w' *3 + 'd',
+        # 'dwbwd',
+        # 'd' + 'w' *3 + 'd',
+        # 'd'*5,
+        'b' * 6,
+        'bwbbwb',
+        'b' * 6,
+        'b' * 6,
+        'bwbbwb',
+        'b' * 6
     ]
     print('Check shape:')
     for i in lst:
