@@ -62,6 +62,7 @@ public class TagFamilyGenerator
     {
         for (int b = nbits-1; b >= 0; b--)
             outs.printf("%d", (v & (1L<<b)) > 0 ? 1 : 0);
+        outs.printf("\n");
     }
 
     static final void printCodes(long codes[], int nbits)
@@ -432,7 +433,7 @@ public class TagFamilyGenerator
 
         return new TagFamily(layout, minhamming, codes);
     }
-
+    
     void report()
     {
         int nCodes;
@@ -453,6 +454,12 @@ public class TagFamilyGenerator
             long rv2 = TagFamily.rotate90(rv1, nbits);
             long rv3 = TagFamily.rotate90(rv2, nbits);
 
+
+
+            printBoolean(System.out, rv0, 8);
+            printBoolean(System.out, rv1, 8);
+            printBoolean(System.out, rv2, 8);
+            printBoolean(System.out, rv3, 8);
             for (int j = i+1; j < nCodes; j++) {
                 // TODO: replace this with our fancy algorithm
                 int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
@@ -550,12 +557,18 @@ public class TagFamilyGenerator
         return v;
     }
 
-    /** Compute the hamming distance between two longs. **/
+    // /** Compute the hamming distance between two longs. **/
     public static final int hammingDistance(long a, long b)
     {
         return popCount2(a^b);
     }
-    
+
+    public static final int countDistance(long a, long b)
+    {
+
+        return 0;
+    }
+
     public static final boolean hammingDistanceAtLeast(long a, long b, int minval)
     {
         long w = a^b;

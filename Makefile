@@ -1,8 +1,8 @@
 OUTPUT_DIR = data
 SRC = src/april/tag/
-CUSTOM = bbbbbbbwbbwbbbbbbbbbbbbbbwbbwbbbbbbb
-MIN_DIS = 8
-NUM_BITS = 4
+CUSTOM = ddddddwwwddwbwddwwwdddddd
+MIN_DIS = 5
+NUM_BITS = 16
 FILENAME = TagCustom$(NUM_BITS)h$(MIN_DIS)
 all:
 	java -cp april.jar april.tag.TagToC $(FILENAME)
