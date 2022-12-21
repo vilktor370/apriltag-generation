@@ -456,10 +456,10 @@ public class TagFamilyGenerator
 
 
 
-            printBoolean(System.out, rv0, 8);
-            printBoolean(System.out, rv1, 8);
-            printBoolean(System.out, rv2, 8);
-            printBoolean(System.out, rv3, 8);
+            // printBoolean(System.out, rv0, 8);
+            // printBoolean(System.out, rv1, 8);
+            // printBoolean(System.out, rv2, 8);
+            // printBoolean(System.out, rv3, 8);
             for (int j = i+1; j < nCodes; j++) {
                 // TODO: replace this with our fancy algorithm
                 int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
