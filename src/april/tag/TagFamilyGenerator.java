@@ -36,6 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.imageio.*;
+import april.util.ComplexNumber;
 
 public class TagFamilyGenerator
 {
@@ -49,6 +50,8 @@ public class TagFamilyGenerator
     long rotcodes[] = new long[16384];
     int nrotcodes = 0;
 
+    int nTag = 0; // n x n tag in counting distance calculation
+
     static final long PRIME = 982451653;
 
     public TagFamilyGenerator(ImageLayout layout, int minhamming)
@@ -56,6 +59,7 @@ public class TagFamilyGenerator
         this.layout = layout;
         this.nbits = layout.getNumBits();
         this.minhamming = minhamming;
+        this.nTag = layout.getSize();
     }
 
     static final void printBoolean(PrintStream outs, long v, int nbits)
@@ -462,16 +466,23 @@ public class TagFamilyGenerator
             // printBoolean(System.out, rv3, 8);
             for (int j = i+1; j < nCodes; j++) {
                 // TODO: replace this with our fancy algorithm
-                int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
-                                             hammingDistance(rv1, codelist.get(j))),
-                                    Math.min(hammingDistance(rv2, codelist.get(j)),
-                                             hammingDistance(rv3, codelist.get(j))));
+                // int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
+                //                              hammingDistance(rv1, codelist.get(j))),
+                //                     Math.min(hammingDistance(rv2, codelist.get(j)),
+                //                              hammingDistance(rv3, codelist.get(j))));
+
+                int dist = Math.min(Math.min(countDistance(rv0, codelist.get(j)),
+                                             countDistance(rv1, codelist.get(j))),
+                                    Math.min(countDistance(rv2, codelist.get(j)),
+                                             countDistance(rv3, codelist.get(j))));
 
 
                 hds[dist]++;
-                if (dist < minhamming) {
-                    System.out.printf("ERROR, dist = %3d: %d %d\n", dist, i, j);
-                }
+                
+                
+                // if (dist < minhamming) {
+                //     System.out.printf("ERROR, dist = %3d: %d %d\n", dist, i, j);
+                // }
                 hdtotal++;
             }
         }
@@ -562,11 +573,114 @@ public class TagFamilyGenerator
     {
         return popCount2(a^b);
     }
-
-    public static final int countDistance(long a, long b)
+    public static Vector<String> getMask(int n){
+        // tq = arange(-n/2,n/2+1)
+        Vector<Double> tq = new Vector<>();
+        for(double i = -n/2; i < (n / 2 + 1); i++){
+          tq.add(i);
+        }
+    
+        // tc = arange(-(n-1)/2,(n-1)/2+1)
+        Vector<Double> tc = new Vector<>();
+        for(double i = -(double)(n - 1) /2; i < (n-1) / 2 + 1; i++){
+          tc.add(i);
+        }
+    
+        // xc,yc = meshgrid(tc,tc)
+        int rows = tc.size();
+        double [][] xc = new double [rows][rows];
+        double [][] yc = new double [rows][rows];
+        for(int i =0;i<rows;i++){
+          for(int j = 0; j < rows; j++){
+            xc[i][j] = tc.get(j);
+            yc[i][j] = tc.get(i);
+          }
+        }
+    
+        // z = xc + 1j*yc
+        ComplexNumber [][] z = new ComplexNumber[rows][rows];
+        for ( int i = 0; i< rows; i++){
+          for(int j = 0;j < rows;j++){
+            z[i][j] = new ComplexNumber(xc[i][j], yc[i][j]);
+          }
+        }
+    
+        // q_rt = tq.max()+1j*tq
+        int tqSize = tq.size();
+    
+        // tq is always sorted from minimum to maximum becasue of numpy.arange()
+        double tqMax = tq.lastElement();
+        ComplexNumber [] q_rt = new ComplexNumber[tqSize];
+        for(int i =0;i<tqSize;i++){
+          q_rt[i] = new ComplexNumber(tqMax, tq.get(i));
+        }
+    
+    
+        // m_rt = [ (z/qk).real >= 0 for qk in q_rt ]
+        boolean m_rt [][][] = new boolean[tqSize][rows][rows];
+        for(int index = 0;index < tqSize;index++){
+          ComplexNumber qk = q_rt[index];
+          // System.out.println(qk.toString());
+            for ( int i = 0; i< rows; i++){
+              for(int j = 0;j < rows;j++){
+                double value =  z[i][j].divide(qk).getReal();
+                // System.out.println(value);
+                if (value >= 0){
+                  m_rt[index][i][j] = true;
+                }else{
+                  m_rt[index][i][j] = false;
+                }
+                // System.out.print(m_rt[index][i][j]);
+              }
+            }
+            // System.out.println("\n");
+        }
+        Vector<String> resultMask = new Vector<>(tqSize);
+        for(int index = 0;index < tqSize;index++){
+         String biString = "";
+           for ( int i = 0; i< rows; i++){
+             for(int j = 0;j < rows;j++){
+               if (m_rt[index][i][j]){
+                 biString+='1';
+               }else{
+                 biString+='0';
+               }
+             }
+           }
+        //    long value = Long.parseLong(biString, 2);
+           resultMask.add(biString);
+ 
+       }
+       return resultMask;
+ 
+   }
+    public final int countDistance(long a, long b)
     {
 
+        // int n = Math.min(Long.toBinaryString(a).length(), Long.toBinaryString(b).length());
+        Vector<String> mask = getMask(nTag);
+        // d(a,b) := min on all choices of k of count( masks[k] and ( a xor b ))
+        // long minDistance = Long.bitCount( andBits(Long.toBinaryString((a ^ b))))
+
+        // long minDistance = Long.bitCount(mask.get(0) & (a ^ b));
+        // for(int i =1;i<mask.size();i++){
+        //     long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
+        //     if (currDistance < minDistance){
+        //         minDistance = currDistance;
+        //     }
+        // }
+        // return (int)minDistance;
         return 0;
+    }
+
+    public static String andBits(String bits1, String bits2) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < bits1.length(); i++) {
+            char b1 = bits1.charAt(i);
+            char b2 = bits2.charAt(i);
+            result.append((b1 == '1') & (b2 == '1') ? '1' : '0');
+        }
+        return result.toString();
     }
 
     public static final boolean hammingDistanceAtLeast(long a, long b, int minval)
