@@ -573,7 +573,7 @@ public class TagFamilyGenerator
     {
         return popCount2(a^b);
     }
-    public static Vector<String> getMask(int n){
+    public static Vector<Long> getMask(int n){
         // tq = arange(-n/2,n/2+1)
         Vector<Double> tq = new Vector<>();
         for(double i = -n/2; i < (n / 2 + 1); i++){
@@ -635,7 +635,7 @@ public class TagFamilyGenerator
             }
             // System.out.println("\n");
         }
-        Vector<String> resultMask = new Vector<>(tqSize);
+        Vector<Long> resultMask = new Vector<>(tqSize);
         for(int index = 0;index < tqSize;index++){
          String biString = "";
            for ( int i = 0; i< rows; i++){
@@ -647,8 +647,8 @@ public class TagFamilyGenerator
                }
              }
            }
-        //    long value = Long.parseLong(biString, 2);
-           resultMask.add(biString);
+           long value = Long.parseLong(biString, 2);
+           resultMask.add(value);
  
        }
        return resultMask;
@@ -656,21 +656,18 @@ public class TagFamilyGenerator
    }
     public final int countDistance(long a, long b)
     {
-
-        // int n = Math.min(Long.toBinaryString(a).length(), Long.toBinaryString(b).length());
-        Vector<String> mask = getMask(nTag);
+        Vector<Long> mask = getMask(nTag);
         // d(a,b) := min on all choices of k of count( masks[k] and ( a xor b ))
         // long minDistance = Long.bitCount( andBits(Long.toBinaryString((a ^ b))))
 
-        // long minDistance = Long.bitCount(mask.get(0) & (a ^ b));
-        // for(int i =1;i<mask.size();i++){
-        //     long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
-        //     if (currDistance < minDistance){
-        //         minDistance = currDistance;
-        //     }
-        // }
-        // return (int)minDistance;
-        return 0;
+        long minDistance = Long.bitCount(mask.get(0) & (a ^ b));
+        for(int i =1;i<mask.size();i++){
+            long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
+            if (currDistance < minDistance){
+                minDistance = currDistance;
+            }
+        }
+        return (int)minDistance;
     }
 
     public static String andBits(String bits1, String bits2) {
