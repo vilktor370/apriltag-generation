@@ -466,15 +466,15 @@ public class TagFamilyGenerator
             // printBoolean(System.out, rv3, 8);
             for (int j = i+1; j < nCodes; j++) {
                 // TODO: replace this with our fancy algorithm
-                // int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
-                //                              hammingDistance(rv1, codelist.get(j))),
-                //                     Math.min(hammingDistance(rv2, codelist.get(j)),
-                //                              hammingDistance(rv3, codelist.get(j))));
+                int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
+                                             hammingDistance(rv1, codelist.get(j))),
+                                    Math.min(hammingDistance(rv2, codelist.get(j)),
+                                             hammingDistance(rv3, codelist.get(j))));
 
-                int dist = Math.min(Math.min(countDistance(rv0, codelist.get(j)),
-                                             countDistance(rv1, codelist.get(j))),
-                                    Math.min(countDistance(rv2, codelist.get(j)),
-                                             countDistance(rv3, codelist.get(j))));
+                // int dist = Math.min(Math.min(countDistance(rv0, codelist.get(j)),
+                //                              countDistance(rv1, codelist.get(j))),
+                //                     Math.min(countDistance(rv2, codelist.get(j)),
+                //                              countDistance(rv3, codelist.get(j))));
 
 
                 hds[dist]++;
