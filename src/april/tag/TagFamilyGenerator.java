@@ -120,12 +120,24 @@ public class TagFamilyGenerator
         long rv2 = TagFamily.rotate90(rv1, nbits);
         long rv3 = TagFamily.rotate90(rv2, nbits);
 
-        if (!hammingDistanceAtLeast(v, rv1, minhamming) ||
-            !hammingDistanceAtLeast(v, rv2, minhamming) ||
-            !hammingDistanceAtLeast(v, rv3, minhamming) ||
-            !hammingDistanceAtLeast(rv1, rv2, minhamming) ||
-            !hammingDistanceAtLeast(rv1, rv3, minhamming) ||
-            !hammingDistanceAtLeast(rv2, rv3, minhamming)) {
+
+        // if (!hammingDistanceAtLeast(v, rv1, minhamming) ||
+        //     !hammingDistanceAtLeast(v, rv2, minhamming) ||
+        //     !hammingDistanceAtLeast(v, rv3, minhamming) ||
+        //     !hammingDistanceAtLeast(rv1, rv2, minhamming) ||
+        //     !hammingDistanceAtLeast(rv1, rv3, minhamming) ||
+        //     !hammingDistanceAtLeast(rv2, rv3, minhamming)) {
+
+        //     return false;
+        // }
+        
+        int mincounting = 0;
+        if (!countingDistanceAtLeast(v, rv1, mincounting) ||
+            !countingDistanceAtLeast(v, rv2, mincounting) ||
+            !countingDistanceAtLeast(v, rv3, mincounting) ||
+            !countingDistanceAtLeast(rv1, rv2, mincounting) ||
+            !countingDistanceAtLeast(rv1, rv3, mincounting) ||
+            !countingDistanceAtLeast(rv2, rv3, mincounting)) {
 
             return false;
         }
@@ -134,7 +146,10 @@ public class TagFamilyGenerator
         for (int widx = 0; widx < nRotCodesPartial; widx++) {
             long w = rotcodes[widx];
 
-            if (!hammingDistanceAtLeast(v, w, minhamming)) {
+            // if (!hammingDistanceAtLeast(v, w, minhamming)) {
+            //     return false;
+            // }
+            if (!countingDistanceAtLeast(v, w, mincounting)) {
                 return false;
             }
         }
@@ -466,15 +481,15 @@ public class TagFamilyGenerator
             // printBoolean(System.out, rv3, 8);
             for (int j = i+1; j < nCodes; j++) {
                 // TODO: replace this with our fancy algorithm
-                int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
-                                             hammingDistance(rv1, codelist.get(j))),
-                                    Math.min(hammingDistance(rv2, codelist.get(j)),
-                                             hammingDistance(rv3, codelist.get(j))));
+                // int dist = Math.min(Math.min(hammingDistance(rv0, codelist.get(j)),
+                //                              hammingDistance(rv1, codelist.get(j))),
+                //                     Math.min(hammingDistance(rv2, codelist.get(j)),
+                //                              hammingDistance(rv3, codelist.get(j))));
 
-                // int dist = Math.min(Math.min(countDistance(rv0, codelist.get(j)),
-                //                              countDistance(rv1, codelist.get(j))),
-                //                     Math.min(countDistance(rv2, codelist.get(j)),
-                //                              countDistance(rv3, codelist.get(j))));
+                int dist = Math.min(Math.min(countDistance(rv0, codelist.get(j)),
+                                             countDistance(rv1, codelist.get(j))),
+                                    Math.min(countDistance(rv2, codelist.get(j)),
+                                             countDistance(rv3, codelist.get(j))));
 
 
                 hds[dist]++;
@@ -656,7 +671,8 @@ public class TagFamilyGenerator
    }
     public final int countDistance(long a, long b)
     {
-        Vector<Long> mask = getMask(nTag);
+        // System.out.printf("ntag: %d\n", nTag);
+        Vector<Long> mask = getMask(5);
         // d(a,b) := min on all choices of k of count( masks[k] and ( a xor b ))
         // long minDistance = Long.bitCount( andBits(Long.toBinaryString((a ^ b))))
 
@@ -695,6 +711,15 @@ public class TagFamilyGenerator
         }
 
         return false;
+    }
+
+    public final boolean countingDistanceAtLeast(long a, long b, int minval)
+    {
+        if (countDistance(a, b) > minval){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /** How many bits are set in the long? **/

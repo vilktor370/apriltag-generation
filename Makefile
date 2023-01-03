@@ -6,6 +6,10 @@ MIN_DIS = 5
 NUM_BITS = 16
 FILENAME = TagCustom$(NUM_BITS)h$(MIN_DIS)
 
+test:
+	ant
+	java -cp april.jar april.tag.TagFamilyGenerator classic_8 5
+
 tag:
 	java -cp april.jar april.tag.TagFamilyGenerator $(SCHEME) $(MIN_DIS) > $(SRC)$(FILENAME).java
 	@echo $(FILENAME) is added in $(SRC)
