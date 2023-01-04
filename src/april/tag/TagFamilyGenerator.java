@@ -53,6 +53,7 @@ public class TagFamilyGenerator
     int nTag = 0; // n x n tag in counting distance calculation
 
     static final long PRIME = 982451653;
+    // static final long PRIME = 0;
 
     public TagFamilyGenerator(ImageLayout layout, int minhamming)
     {
@@ -111,9 +112,9 @@ public class TagFamilyGenerator
     boolean isCodePartiallyOkay(long v, long nRotCodesPartial)
     {
         // tag must be reasonably complex
-        if (!isComplexEnough(v)) {
-            return false;
-        }
+        // if (!isComplexEnough(v)) {
+        //     return false;
+        // }
 
         // The tag must be different from itself when rotated.
         long rv1 = TagFamily.rotate90(v, nbits);
@@ -131,13 +132,13 @@ public class TagFamilyGenerator
         //     return false;
         // }
         
-        int mincounting = 0;
-        if (!countingDistanceAtLeast(v, rv1, mincounting) ||
-            !countingDistanceAtLeast(v, rv2, mincounting) ||
-            !countingDistanceAtLeast(v, rv3, mincounting) ||
-            !countingDistanceAtLeast(rv1, rv2, mincounting) ||
-            !countingDistanceAtLeast(rv1, rv3, mincounting) ||
-            !countingDistanceAtLeast(rv2, rv3, mincounting)) {
+
+        if (!countingDistanceAtLeast(v, rv1, minhamming) ||
+            !countingDistanceAtLeast(v, rv2, minhamming) ||
+            !countingDistanceAtLeast(v, rv3, minhamming) ||
+            !countingDistanceAtLeast(rv1, rv2, minhamming) ||
+            !countingDistanceAtLeast(rv1, rv3, minhamming) ||
+            !countingDistanceAtLeast(rv2, rv3, minhamming)) {
 
             return false;
         }
@@ -149,7 +150,7 @@ public class TagFamilyGenerator
             // if (!hammingDistanceAtLeast(v, w, minhamming)) {
             //     return false;
             // }
-            if (!countingDistanceAtLeast(v, w, mincounting)) {
+            if (!countingDistanceAtLeast(v, w, minhamming)) {
                 return false;
             }
         }
@@ -207,7 +208,11 @@ public class TagFamilyGenerator
         for (int widx = nRotCodesPartial; widx < nrotcodes; widx++) {
             long w = rotcodes[widx];
 
-            if (!hammingDistanceAtLeast(v, w, minhamming)) {
+            // if (!hammingDistanceAtLeast(v, w, minhamming)) {
+            //     return false;
+            // }
+
+            if (!countingDistanceAtLeast(v, w, minhamming)) {
                 return false;
             }
         }
@@ -588,10 +593,13 @@ public class TagFamilyGenerator
     {
         return popCount2(a^b);
     }
-    public static Vector<Long> getMask(int n){
+
+
+    
+    public static Vector<Long> getMask(int n, int nbits){
         // tq = arange(-n/2,n/2+1)
         Vector<Double> tq = new Vector<>();
-        for(double i = -n/2; i < (n / 2 + 1); i++){
+        for(double i = -n/2 + 1; i < (n / 2 + 1); i++){
           tq.add(i);
         }
     
@@ -627,61 +635,63 @@ public class TagFamilyGenerator
         double tqMax = tq.lastElement();
         ComplexNumber [] q_rt = new ComplexNumber[tqSize];
         for(int i =0;i<tqSize;i++){
-          q_rt[i] = new ComplexNumber(tqMax, tq.get(i));
+            q_rt[i] = new ComplexNumber(tqMax, tq.get(i));
         }
     
     
-        // m_rt = [ (z/qk).real >= 0 for qk in q_rt ]
-        boolean m_rt [][][] = new boolean[tqSize][rows][rows];
-        for(int index = 0;index < tqSize;index++){
-          ComplexNumber qk = q_rt[index];
-          // System.out.println(qk.toString());
-            for ( int i = 0; i< rows; i++){
-              for(int j = 0;j < rows;j++){
-                double value =  z[i][j].divide(qk).getReal();
-                // System.out.println(value);
-                if (value >= 0){
-                  m_rt[index][i][j] = true;
-                }else{
-                  m_rt[index][i][j] = false;
+        Vector<Long> masks = new Vector<>(tqSize * 4);
+
+        for(int index =0;index<tqSize;index++){
+            ComplexNumber q_rk = q_rt[index];
+
+
+            String bit_string = "";
+            for(int i =0;i<rows;i++){
+                for(int j =0;j < rows;j++){
+                    double value_rk =  z[i][j].divide(q_rk).getReal();
+                    if (value_rk >= 0){
+                        bit_string += "1";
+                    }else{
+                        bit_string += "0";
+                    }
                 }
-                // System.out.print(m_rt[index][i][j]);
-              }
             }
-            // System.out.println("\n");
+            // four rotations
+            Long bits = Long.parseLong(bit_string, 2);
+            Long rot1 = TagFamily.rotate90(bits, nbits);
+            Long rot2 = TagFamily.rotate90(rot1, nbits);
+            Long rot3 = TagFamily.rotate90(rot2, nbits);
+
+            masks.add(bits);
+            masks.add(rot1);
+            masks.add(rot2);
+            masks.add(rot3);
         }
-        Vector<Long> resultMask = new Vector<>(tqSize);
-        for(int index = 0;index < tqSize;index++){
-         String biString = "";
-           for ( int i = 0; i< rows; i++){
-             for(int j = 0;j < rows;j++){
-               if (m_rt[index][i][j]){
-                 biString+='1';
-               }else{
-                 biString+='0';
-               }
-             }
-           }
-           long value = Long.parseLong(biString, 2);
-           resultMask.add(value);
- 
-       }
-       return resultMask;
+        return masks;
  
    }
     public final int countDistance(long a, long b)
     {
         // System.out.printf("ntag: %d\n", nTag);
-        Vector<Long> mask = getMask(5);
+        Vector<Long> mask = getMask(nTag - 4, nbits);
         // d(a,b) := min on all choices of k of count( masks[k] and ( a xor b ))
-        // long minDistance = Long.bitCount( andBits(Long.toBinaryString((a ^ b))))
+        
 
-        long minDistance = Long.bitCount(mask.get(0) & (a ^ b));
-        for(int i =1;i<mask.size();i++){
-            long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
-            if (currDistance < minDistance){
-                minDistance = currDistance;
-            }
+        long minDistance = Long.MAX_VALUE;
+        for(int i =0;i<mask.size();i++){
+            // for(int r =0; r< 2;r++){
+                long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
+                // if (currDistance == 0){
+                //     System.out.println("Something went wrong!");
+                //     System.out.printf("Mask: %d, a: %d, b: %d, index: %d\n", mask.get(i), a, b, i);
+                // }
+                // System.out.printf("%d distance: %d, index: %d\n", mask.get(i) & (a ^ b), currDistance, i);
+                if (currDistance < minDistance){
+                    minDistance = currDistance;
+                }
+                // b = TagFamily.rotate90(b, nbits);
+            // }
+
         }
         return (int)minDistance;
     }
