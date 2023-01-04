@@ -4,3 +4,5 @@ april.jar
 data/
 .vscode
 env/
+build
+.DS_Store
