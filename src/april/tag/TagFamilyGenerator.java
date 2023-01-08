@@ -112,9 +112,9 @@ public class TagFamilyGenerator
     boolean isCodePartiallyOkay(long v, long nRotCodesPartial)
     {
         // tag must be reasonably complex
-        // if (!isComplexEnough(v)) {
-        //     return false;
-        // }
+        if (!isComplexEnough(v)) {
+            return false;
+        }
 
         // The tag must be different from itself when rotated.
         long rv1 = TagFamily.rotate90(v, nbits);
@@ -679,7 +679,7 @@ public class TagFamilyGenerator
 
         long minDistance = Long.MAX_VALUE;
         for(int i =0;i<mask.size();i++){
-            // for(int r =0; r< 2;r++){
+            // for(int r =0; r< 4;r++){
                 long currDistance = Long.bitCount(mask.get(i) & (a ^ b));
                 // if (currDistance == 0){
                 //     System.out.println("Something went wrong!");
@@ -695,7 +695,8 @@ public class TagFamilyGenerator
         }
         return (int)minDistance;
     }
-
+// 0b 0011 0001 0010 1110
+// 0b 0000 0001 0000 0000
     public static String andBits(String bits1, String bits2) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < bits1.length(); i++) {
