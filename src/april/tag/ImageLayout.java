@@ -77,41 +77,41 @@ public class ImageLayout {
             }
 
             // Validate symmetric under rot90
-            for (int y = 0; y <= layout.size / 2; y++) {
-                for (int x = y; x < layout.size - 1 - y; x++) {
-                    if (!(layout.pixels[y][x] == layout.pixels[x][layout.size - 1 - y]
-                            && layout.pixels[y][x] == layout.pixels[layout.size - 1 - x][y]
-                            && layout.pixels[y][x] == layout.pixels[layout.size - 1 - y][layout.size - 1 - x])) {
-                        throw new RuntimeException("Layout not symmetric.");
-                    }
-                }
-            }
+            // for (int y = 0; y <= layout.size / 2; y++) {
+            //     for (int x = y; x < layout.size - 1 - y; x++) {
+            //         if (!(layout.pixels[y][x] == layout.pixels[x][layout.size - 1 - y]
+            //                 && layout.pixels[y][x] == layout.pixels[layout.size - 1 - x][y]
+            //                 && layout.pixels[y][x] == layout.pixels[layout.size - 1 - y][layout.size - 1 - x])) {
+            //             throw new RuntimeException("Layout not symmetric.");
+            //         }
+            //     }
+            // }
 
             // Validate border
-            boolean foundBorder = false;
-            for (int i = 0; i < (layout.size - 1)/2; i++) {
-                if (layout.pixels[i][i] == PixelType.WHITE
-                        && layout.pixels[i + 1][i + 1] == PixelType.BLACK
-                        && validateBorder(layout, i, false)) {
-                    foundBorder = true;
-                    layout.reversedBorder = false;
-                    layout.borderStart = i + 1;
-                    layout.borderWidth = layout.size - 2*layout.borderStart;
-                    break;
-                }
-                if (layout.pixels[i][i] == PixelType.BLACK
-                        && layout.pixels[i + 1][i + 1] == PixelType.WHITE
-                        && validateBorder(layout, i, true)) {
-                    foundBorder = true;
-                    layout.reversedBorder = true;
-                    layout.borderStart = i + 1;
-                    layout.borderWidth = layout.size - 2*layout.borderStart;
-                    break;
-                }
-            }
-            if (!foundBorder) {
-                throw new RuntimeException("Layout has no border.");
-            }
+            // boolean foundBorder = false;
+            // for (int i = 0; i < (layout.size - 1)/2; i++) {
+            //     if (layout.pixels[i][i] == PixelType.WHITE
+            //             && layout.pixels[i + 1][i + 1] == PixelType.BLACK
+            //             && validateBorder(layout, i, false)) {
+            //         foundBorder = true;
+            //         layout.reversedBorder = false;
+            //         layout.borderStart = i + 1;
+            //         layout.borderWidth = layout.size - 2*layout.borderStart;
+            //         break;
+            //     }
+            //     if (layout.pixels[i][i] == PixelType.BLACK
+            //             && layout.pixels[i + 1][i + 1] == PixelType.WHITE
+            //             && validateBorder(layout, i, true)) {
+            //         foundBorder = true;
+            //         layout.reversedBorder = true;
+            //         layout.borderStart = i + 1;
+            //         layout.borderWidth = layout.size - 2*layout.borderStart;
+            //         break;
+            //     }
+            // }
+            // if (!foundBorder) {
+            //     throw new RuntimeException("Layout has no border.");
+            // }
 
             return layout;
         }

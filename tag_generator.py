@@ -18,25 +18,28 @@ def generateMask(n):
 def main():
     
     lst = [
-        # 'b' * 5,
-        # 'bwwwb',
-        # 'bwdwb',
-        # 'bwwwb',
-        # 'b' * 5,
-        
-        
-        # 'b' * 6,
-        # 'bwbbwb',
-        # 'b' * 6,
-        # 'b' * 6,
-        # 'bwbbwb',
-        # 'b' * 6
-        'bb',
-        'bb'
+        'bbwwbwwwbw',
+        'wwwwwbwwwb',
+        'wwddddddww',
+        'wwdbbbbdww',
+        'bwdbwwbdbw',
+        'wbdbwwbdwb',
+        'wwdbbbbdww',
+        'wwddddddww',
+        'bwwwbwwwww',
+        'wbwwwbwwbb'
     ]
+    # lst= [
+    #     'dwwwd',
+    #     'wbbbw',
+    #     'wbwbw',
+    #     'wbbbw',
+    #     'dwwwd'
+    # ]
     print('Check shape:')
     for i in lst:
         print('\t' + i)
+        # print(len(i))
     print("Output")
     output = ''.join(lst)
     print('\t' + output)

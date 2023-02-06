@@ -1,3 +1,3 @@
-for f in data/Tag25h3_counting/*.png; do
+for f in data/TagCustom20h1/*.png; do
   convert ./"$f" -scale 2000% ./"${f%}"
 done
