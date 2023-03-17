@@ -1,0 +1,28 @@
+1. First make a build directory and a data directory
+    mkdir build
+    mkdir data
+
+2. Build entire software
+    ant
+
+3. Generate a Tag family file. Ex. TagCustom20h1.java. Make sure it's located in src/april/tag
+    java -cp april.jar april.tag.TagFamilyGenerator custom_bbwwbwwwbwwwwwwbwwwbwwddddddwwwwdbbbbdwwbwdbwwbdbwwbdbwwbdwbwwdbbbbdwwwwddddddwwbwwwbwwwwwwbwwwbwwbb 1
+
+4. Build again
+    ant
+   Makre sure that there is a .class file located in the build/april/tag. Ex. TagCustom20h1.class
+
+5. Generate markers
+    java -cp april.jar april.tag.GenerateTags april.tag.TagCustom20h1 data
+
+    The image that gets generated is super tiny. I wrote a resize.sh to rescale the images. 
+    To run it: sh resize.sh
+    Make sure you modify the path to be where your .png files are located.
+
+6. Generate C code.
+   java -cp april.jar april.tag.TagToC april.tag.TagCustom20h1
+
+   After running this, a .c and .h file will be added. Ex. tagCustom20h1.h and tagCustom20h1.c
+   The C code is only used for detection. It specifies the decoding order for a certain tag family.
+   You need to copy the both .c and .h file to apriltag/ directory and put #include <TagCustom20h1.h>
+   in the .c or .cpp file that you would like to build.
